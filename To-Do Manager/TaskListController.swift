@@ -19,6 +19,11 @@ class TaskListController: UITableViewController {
                     return task1Position < task2Position
                 }
             }
+            var savingArray: [TaskProtocol] = []
+            tasks.forEach{ _, value in
+                savingArray += value
+            }
+            taskStorage.saveTasks(savingArray)
         }
     }
     var sectionTypePossition: [TaskPriority] = [.important,.normal]
@@ -26,11 +31,7 @@ class TaskListController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadTask()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        navigationItem.leftBarButtonItem = editButtonItem
     }
 
     // MARK: - Table view data source
@@ -92,7 +93,53 @@ class TaskListController: UITableViewController {
             self.tasks[taskType]![indexPath.row].status = .planned
             self.tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
         }
-        return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
+        let actionEditInstance = UIContextualAction(style: .normal, title: "Изменить") {_,_,_ in
+            let editScreen = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TaskEditController") as! TaskEditController
+            
+            editScreen.taskText = self.tasks[taskType]![indexPath.row].title
+            editScreen.taskType = self.tasks[taskType]![indexPath.row].type
+            editScreen.taskStatus = self.tasks[taskType]![indexPath.row].status
+            
+            editScreen.doAfterEdit = { [self] title, type, status in
+                let editedTask = Task(title: title, type: type, status: status)
+                tasks[taskType]![indexPath.row] = editedTask
+                tableView.reloadData()
+            }
+            
+            self.navigationController?.pushViewController(editScreen, animated: true)
+        }
+        actionEditInstance.backgroundColor = .darkGray
+        
+        let actionConfiguration: UISwipeActionsConfiguration
+        if tasks[taskType]![indexPath.row].status == .complited {
+            actionConfiguration = UISwipeActionsConfiguration(actions: [actionSwipeInstance , actionEditInstance])
+        } else {
+            actionConfiguration = UISwipeActionsConfiguration(actions: [actionEditInstance])
+        }
+        return actionConfiguration
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let taskType = sectionTypePossition[indexPath.section]
+        tasks[taskType]?.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let taskTypeFrom = sectionTypePossition[sourceIndexPath.section]
+        let taskTypeTo = sectionTypePossition[destinationIndexPath.section]
+        
+        guard let movedTask = tasks[taskTypeFrom]?[sourceIndexPath.row] else {
+            return
+        }
+        
+        tasks[taskTypeFrom]!.remove(at: sourceIndexPath.row)
+        tasks[taskTypeTo]!.insert(movedTask, at: destinationIndexPath.row)
+        
+        if taskTypeFrom != taskTypeTo {
+            tasks[taskTypeTo]![destinationIndexPath.row].type = taskTypeTo
+        }
+        tableView.reloadData()
     }
     
     private func getConfiguredTaskCell_constraints(for indexPath: IndexPath) -> UITableViewCell {
@@ -157,5 +204,25 @@ class TaskListController: UITableViewController {
         }
         return cell
     }
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toCreateScreen" {
+            let destination = segue.destination as! TaskEditController
+            destination.doAfterEdit = { [self] title, type, status in
+                let newTask = Task(title: title, type: type, status: status)
+                tasks[type]?.append(newTask)
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    func setTasks(_ tasksCollection: [TaskProtocol]) {
+        sectionTypePossition.forEach { taskType in
+            tasks[taskType] = []
+            
+            tasksCollection.forEach { task in
+                tasks[task.type]?.append(task)
+            }
+        }
+    }
 }
