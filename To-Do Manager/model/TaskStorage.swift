@@ -16,6 +16,7 @@ class TaskStorage: TaskStorageProtocol{
 
     private var storage = UserDefaults.standard
     var storageKey: String = "tasks"
+    
     private enum Taskkey: String{
         case title
         case type
@@ -33,24 +34,24 @@ class TaskStorage: TaskStorageProtocol{
                   let statusRaw = task[Taskkey.status.rawValue] else {
                       continue
                   }
-            let type: TaskPriority = typeRaw == "important" ? .important: .normal
-            let status: TaskStatus = statusRaw == "planned" ? .planned: .complited
+            let type: TaskPriority = typeRaw == "important" ? .important : .normal
+            let status: TaskStatus = statusRaw == "planned" ? .planned : .complited
             resoultTask.append(Task(title: title, type: type, status: status))
         }
         return resoultTask
     }
         
-        func saveTasks(_ tasks: [TaskProtocol]) {
-            var arrayFromStorage: [[String:String]] = []
-            tasks.forEach { task in
-                var newElementForStorage: Dictionary <String, String> = [:]
-                newElementForStorage[Taskkey.title.rawValue] = task.title
-                newElementForStorage[Taskkey.type.rawValue] = (task.type == .important) ? "important" : "normal"
-                newElementForStorage[Taskkey.status.rawValue] = (task.status == .complited) ? "complited" : "planned"
-                arrayFromStorage.append(newElementForStorage)
-            }
-            storage.set(arrayFromStorage, forKey: storageKey)
+    func saveTasks(_ tasks: [TaskProtocol]) {
+        var arrayFromStorage: [[String:String]] = []
+        tasks.forEach { task in
+            var newElementForStorage: Dictionary <String, String> = [:]
+            newElementForStorage[Taskkey.title.rawValue] = task.title
+            newElementForStorage[Taskkey.type.rawValue] = (task.type == .important) ? "important" : "normal"
+            newElementForStorage[Taskkey.status.rawValue] = (task.status == .complited) ? "complited" : "planned"
+            arrayFromStorage.append(newElementForStorage)
         }
+        storage.set(arrayFromStorage, forKey: storageKey)
+    }
         
 //        let testTasks: [TaskProtocol] = [
 //            Task(title: "swim", type: .normal, status: .planned),

@@ -30,7 +30,7 @@ class TaskListController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadTask()
+        //loadTask()
         navigationItem.leftBarButtonItem = editButtonItem
     }
 
@@ -175,13 +175,13 @@ class TaskListController: UITableViewController {
         return resoultSymbol
     }
     
-    private func loadTask(){
-        sectionTypePossition.forEach { taskType in tasks[taskType] = []
-        }
-        taskStorage.loadTasks().forEach {
-            task in tasks[task.type]?.append(task)
-        }
-    }
+//    private func loadTask(){
+//        sectionTypePossition.forEach { taskType in tasks[taskType] = []
+//        }
+//        taskStorage.loadTasks().forEach {
+//            task in tasks[task.type]?.append(task)
+//        }
+//    }
     
     var tasksStatusPosition: [TaskStatus] = [.planned, .complited]
     
@@ -217,11 +217,13 @@ class TaskListController: UITableViewController {
     }
     
     func setTasks(_ tasksCollection: [TaskProtocol]) {
-        sectionTypePossition.forEach { taskType in
+        sectionTypePossition.forEach {taskType in
             tasks[taskType] = []
             
             tasksCollection.forEach { task in
-                tasks[task.type]?.append(task)
+                if task.type == taskType {
+                    tasks[task.type]?.append(task)
+                }
             }
         }
     }
