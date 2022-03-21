@@ -52,13 +52,5 @@ class TaskStorage: TaskStorageProtocol{
         }
         storage.set(arrayFromStorage, forKey: storageKey)
     }
-        
-//        let testTasks: [TaskProtocol] = [
-//            Task(title: "swim", type: .normal, status: .planned),
-//            Task(title: "resume", type: .important, status: .planned),
-//            Task(title: "sleep", type: .normal, status: .complited),
-//            Task(title: "go Perm", type: .normal, status: .planned),
-//            Task(title: "Пригласить на вечеринку Дольфа, Джеки, Леонардо, Уилла и Брюса", type: .important, status: .planned)]
-//        return testTasks
-    }
+}
     

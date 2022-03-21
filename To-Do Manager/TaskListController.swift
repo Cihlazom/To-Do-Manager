@@ -30,14 +30,11 @@ class TaskListController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //loadTask()
         navigationItem.leftBarButtonItem = editButtonItem
     }
 
-    // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return tasks.count
     }
 
@@ -174,14 +171,6 @@ class TaskListController: UITableViewController {
         }
         return resoultSymbol
     }
-    
-//    private func loadTask(){
-//        sectionTypePossition.forEach { taskType in tasks[taskType] = []
-//        }
-//        taskStorage.loadTasks().forEach {
-//            task in tasks[task.type]?.append(task)
-//        }
-//    }
     
     var tasksStatusPosition: [TaskStatus] = [.planned, .complited]
     
