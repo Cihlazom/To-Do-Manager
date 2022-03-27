@@ -28,6 +28,8 @@ class TaskListController: UITableViewController {
     }
     var sectionTypePossition: [TaskPriority] = [.important,.normal]
     
+    var tasksStatusPosition: [TaskStatus] = [.planned, .complited]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem
@@ -171,8 +173,6 @@ class TaskListController: UITableViewController {
         }
         return resoultSymbol
     }
-    
-    var tasksStatusPosition: [TaskStatus] = [.planned, .complited]
     
     private func getConfiguredTaskCell_stack(for indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellStack", for: indexPath) as! TaskCell

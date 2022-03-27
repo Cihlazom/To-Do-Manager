@@ -9,8 +9,6 @@ import UIKit
 
 class TaskEditController: UITableViewController {
 
-    @IBOutlet var taskStatusSwitch: UISwitch!
-    
     var taskText: String = ""
     var taskType: TaskPriority = .normal
     var taskStatus: TaskStatus = .planned
@@ -19,6 +17,7 @@ class TaskEditController: UITableViewController {
     
     @IBOutlet var taskTitle: UITextField!
     @IBOutlet var taskTypeLabel: UILabel!
+    @IBOutlet var taskStatusSwitch: UISwitch!
     
     private var taskTitles: [TaskPriority: String] = [
         .important: "Важная",
